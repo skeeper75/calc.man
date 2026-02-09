@@ -1,0 +1,66 @@
+import { Card } from '@/components/ui/card'
+import { useCalculatorStore } from '@/store/useCalculatorStore'
+import Display from './Display'
+import Keypad from './Keypad'
+
+/**
+ * Calculator 컴포넌트
+ *
+ * [SPEC-CALC-002] 전체 계산기 UI 조율 및 레이아웃 관리
+ * - useCalculatorStore로 계산기 상태 관리
+ * - Display와 Keypad 컴포넌트 조합
+ * - shadcn/ui Card 컴포넌트로 전체 래핑
+ *
+ * REQ-UI-001: 항상 현재 입력값 표시
+ * REQ-UI-012: UI 렌더링 중에 엔진 상태를 직접 수정하지 않음
+ */
+export default function Calculator() {
+  const { displayValue, error, inputNumber, setOperator, calculate, clearAll, deleteLast } =
+    useCalculatorStore()
+
+  /**
+   * 버튼 클릭 핸들러
+   *
+   * REQ-UI-012: UI는 이벤트 핸들러를 통해 상태 변경만 요청
+   */
+  const handleButtonClick = (value: string) => {
+    // 에러 상태이면 AC 버튼만 허용
+    if (error && value !== 'AC') {
+      return
+    }
+
+    switch (value) {
+      case 'AC':
+        clearAll()
+        break
+      case 'C':
+        deleteLast()
+        break
+      case '=':
+        calculate()
+        break
+      case '+':
+      case '-':
+      case '×':
+      case '÷':
+        setOperator(value)
+        break
+      default:
+        // 숫자 또는 소수점
+        inputNumber(value)
+        break
+    }
+  }
+
+  return (
+    <Card className="p-6 shadow-xl">
+      <h1 className="text-2xl font-bold text-center mb-4 text-gray-800">Calc.man</h1>
+
+      {/* 디스플레이 영역 */}
+      <Display value={displayValue} error={!!error} />
+
+      {/* 키패드 영역 */}
+      <Keypad onButtonClick={handleButtonClick} />
+    </Card>
+  )
+}

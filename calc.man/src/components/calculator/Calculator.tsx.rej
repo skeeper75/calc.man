@@ -1,0 +1,20 @@
+@@ -40,12 +40,18 @@
+       case '=':
+         calculate()
+         break
++      case '+':
++      case '-':
+         setOperator(value)
+         break
+       case '*':
+       case '×':
+-        setOperator(value)
++        setOperator('×')
++        break
++      case '/':
++      case '÷':
++        setOperator('÷')
+         break
+       default:
+         // 숫자 또는 소수점
+ 
